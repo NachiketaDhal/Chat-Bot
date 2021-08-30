@@ -1,0 +1,93 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;1,300&display=swap");
+
+$white-primary: #eeeef6;
+$white-secondary: #b4b6cb;
+$blue-primary: #13145c;
+$blue-secondary: #3d4275;
+$black-primary: #222222;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-size: 10px;
+}
+
+body {
+  min-height: 100vh;
+  background-color: $white-primary;
+  font-family: "Poppins", sans-serif;
+  ::selection {
+    background-color: transparent;
+  }
+}
+
+.left {
+  float: left;
+  clear: both;
+  color: $white-primary;
+  background-color: $blue-secondary;
+  border-radius: 3px;
+  padding: 1em;
+  margin: 1em;
+  max-width: 40%;
+  font-size: 1.3em;
+  position: relative;
+}
+
+.right {
+  float: right;
+  clear: both;
+  color: $black-primary;
+  background-color: $white-secondary;
+  border-radius: 3px;
+  padding: 1em;
+  margin: 1em;
+  max-width: 40%;
+  font-size: 1.3em;
+  position: relative;
+}
+
+.center {
+  text-align: center;
+  color: rgba(34, 34, 34, 0.8);
+  background-color: rgba(180, 182, 203, 0.2);
+  padding: 0.5em;
+  border-radius: 1em;
+  margin: 1em auto;
+  max-width: 20%;
+  clear: both;
+}
+
+.date {
+  text-align: center;
+  background-color: rgba(34, 34, 34, 0.8);
+  color: $white-secondary;
+  padding: 0.5em;
+  border-radius: 1em;
+  margin: 1em auto;
+  max-width: 20%;
+  clear: both;
+}
+
+// .line-left {
+//   height: 0.3em;
+//   color: rgba(180, 182, 203, 0.2);
+// }
+
+// .line-right {
+//   height: 0.3em;
+//   color: rgba(180, 182, 203, 0.2);
+// }
+
+.time {
+  padding: 0.6em;
+  border-radius: 1em;
+  margin: 1em auto;
+  max-width: 20%;
+  clear: both;
+  font-size: 0.5em;
+  position: absolute;
+  bottom: -10px;
+  right: 14px;
+}
