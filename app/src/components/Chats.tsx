@@ -1,59 +1,31 @@
 import React, { FormEvent, Fragment, useEffect, useState } from "react";
 import styled from "styled-components";
 import io from "socket.io-client";
-// import moment from "moment";
 
 import "./_chats.scss";
-import { appendMessage } from "../functions";
+import { appendMessage, formatDate, formatTime } from "../functions";
+import { IAggregatedChats } from "../interfaces";
+import axios from "axios";
 
 const socket = io("http://localhost:8000");
-// const today = moment();
-const today = new Date().toLocaleDateString();
 
 const Chats = () => {
   const [inputValue, setInputValue] = useState<string>("");
   const [userName, setUserName] = useState("");
-  // const [userLeft, setUserLeft] = useState(false);
-  // const [messages, setMessages] = useState<string[]>([]);
+  const [aggregatedChats, setAggregatedChats] = useState<IAggregatedChats[]>(
+    []
+  );
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    if (!inputValue) {
-      return;
-    }
-
-    // socket.emit("send", inputValue);
-
-    const message = inputValue;
-    appendMessage(
-      `You: ${message}`,
-      "right",
-      new Date().toLocaleTimeString("en-US", { hour12: false })
+  const fetchChats = async function () {
+    const fetchedChats = await axios.get(
+      "http://localhost:8000/api/chats/aggregated"
     );
-    socket.emit("send", message);
-    // console.log(today.format("YYYY-MM-DD"));
-
-    setInputValue("");
-
-    // socket.on("receive", (data) => {
-    //   console.log(data);
-    //   appendMessage(`${data.name}: ${data.message}`, "left");
-    // });
+    setAggregatedChats(fetchedChats.data.aggregatedChats);
+    console.log(fetchedChats.data.aggregatedChats);
   };
 
   useEffect(() => {
-    appendMessage(today, "date");
-  }, []);
-
-  useEffect(() => {
-    socket.on("receive", (data) => {
-      console.log(data);
-      appendMessage(
-        `${data.name}: ${data.message}`,
-        "left",
-        new Date().toLocaleTimeString("en-US", { hour12: false })
-      );
-    });
+    fetchChats();
   }, []);
 
   useEffect(() => {
@@ -68,20 +40,46 @@ const Chats = () => {
     socket.emit("new-user-joined", name);
 
     socket.on("user-joined", (name) => {
-      appendMessage(`${name} joined`, "center");
+      appendMessage(`${name} joined the chat`, "center");
     });
   }, []);
 
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    if (!inputValue) {
+      return;
+    }
+
+    const message = inputValue;
+    appendMessage(
+      `You: ${message}`,
+      "right",
+      new Date().toLocaleTimeString("en-US", { hour12: false })
+    );
+    socket.emit("send", message);
+
+    setInputValue("");
+  };
+
   // useEffect(() => {
-  //   socket.on("user-joined", (name) => {
-  //     appendMessage(`${name} joined`, "center");
-  //   });
+  //   appendMessage(today, "date");
   // }, []);
+
+  useEffect(() => {
+    socket.on("receive", (data) => {
+      // console.log(data);
+      appendMessage(
+        `${data.name}: ${data.message}`,
+        "left",
+        new Date().toLocaleTimeString("en-US", { hour12: false })
+      );
+    });
+  }, []);
 
   useEffect(() => {
     if (userName === "Annonymous") return;
     socket.on("user-left", (name: string) => {
-      appendMessage(`${name} left`, "center");
+      appendMessage(`${name} left the chat`, "center");
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -89,17 +87,40 @@ const Chats = () => {
   return (
     <Fragment>
       <Container className="message-container">
-        {/* <div className="right">Hi bhai</div>
-        <div className="left">
-          Hi bhai Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          Perferendis, magni?
-        </div>
-        <div className="center">Ram joined</div> */}
-        {/* {messages.map((m, i) => (
-          <div className="right" key={i}>
-            {`${userName}: ${m}`}
-          </div>
-        ))} */}
+        {aggregatedChats.map((aggrChat, i) => {
+          const { day, month, year } = aggrChat._id;
+          return (
+            <React.Fragment key={i}>
+              <div className="date">
+                {formatDate(new Date(year, month - 1, day))}
+              </div>
+              {aggrChat.chats.map((m, index) => {
+                return (
+                  <div
+                    key={index}
+                    className={
+                      m.classType === "center"
+                        ? "center"
+                        : m.name === userName
+                        ? "right"
+                        : "left"
+                    }
+                  >
+                    {m.classType === "center"
+                      ? ""
+                      : m.name === userName
+                      ? "You"
+                      : m.name}
+                    {m.classType === "center" ? "" : ":"} {m.message}
+                    {m.classType !== "center" && (
+                      <span className="time">{formatTime(m.createdAt)}</span>
+                    )}
+                  </div>
+                );
+              })}
+            </React.Fragment>
+          );
+        })}
       </Container>
       <Form>
         <form onSubmit={handleSubmit}>

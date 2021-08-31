@@ -14,3 +14,11 @@ export const appendMessage = (
   }
   document.querySelector(".message-container")?.append(messageElement);
 };
+
+export const formatDate = function (date: any) {
+  return new Date(date).toLocaleDateString();
+};
+
+export const formatTime = function (time: any) {
+  return new Date(time).toLocaleTimeString("en-US", { hour12: false });
+};
