@@ -1,3 +1,5 @@
+import { IAggregatedChats } from "./interfaces";
+
 export const appendMessage = (
   message: string,
   position: string,
@@ -21,4 +23,14 @@ export const formatDate = function (date: any) {
 
 export const formatTime = function (time: any) {
   return new Date(time).toLocaleTimeString("en-US", { hour12: false });
+};
+
+export const customSortingOfDates = function (arr: IAggregatedChats[]) {
+  arr.sort((a, b) => {
+    return (
+      new Date(a._id.year, a._id.month - 1, a._id.day).valueOf() -
+      new Date(b._id.year, b._id.month - 1, b._id.day).valueOf()
+    );
+  });
+  return arr;
 };

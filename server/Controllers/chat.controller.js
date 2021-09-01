@@ -32,6 +32,7 @@ exports.getAggrigatedChats = async (req, res) => {
               classType: "$classType",
               createdAt: "$createdAt",
             },
+            // $sort: { createdAt: -1 },
           },
         },
       },

@@ -3,7 +3,12 @@ import styled from "styled-components";
 import io from "socket.io-client";
 
 import "./_chats.scss";
-import { appendMessage, formatDate, formatTime } from "../functions";
+import {
+  appendMessage,
+  customSortingOfDates,
+  formatDate,
+  formatTime,
+} from "../functions";
 import { IAggregatedChats } from "../interfaces";
 import axios from "axios";
 
@@ -87,11 +92,11 @@ const Chats = () => {
   return (
     <Fragment>
       <Container className="message-container">
-        {aggregatedChats.map((aggrChat, i) => {
+        {customSortingOfDates(aggregatedChats).map((aggrChat, i) => {
           const { day, month, year } = aggrChat._id;
           return (
             <React.Fragment key={i}>
-              <div className="date">
+              <div className="date" style={{ fontWeight: "bold" }}>
                 {formatDate(new Date(year, month - 1, day))}
               </div>
               {aggrChat.chats.map((m, index) => {

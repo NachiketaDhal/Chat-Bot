@@ -18,7 +18,6 @@ app.use("/api", chatRoute);
 connect();
 
 const users = {};
-let send = true;
 
 io.on("connection", (socket) => {
   socket.on("new-user-joined", (name) => {

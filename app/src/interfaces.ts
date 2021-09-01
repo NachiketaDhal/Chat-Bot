@@ -7,7 +7,13 @@ export interface IChat {
   updatededAt?: any;
 }
 
+export interface IDate {
+  day: number;
+  month: number;
+  year: number;
+}
+
 export interface IAggregatedChats {
-  _id: { day: number; month: number; year: number };
+  _id: IDate;
   chats: IChat[];
 }
