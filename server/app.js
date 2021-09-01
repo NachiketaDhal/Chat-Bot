@@ -25,12 +25,14 @@ io.on("connection", (socket) => {
     // console.log(socket.id);
     users[socket.id] = name;
     // console.log(users);
-    let chatMessage = new Chat({
-      message: `${name} joined the chat`,
-      name: users[socket.id],
-      classType: "center",
-    });
-    chatMessage.save();
+    if (name !== "Annonymous") {
+      let chatMessage = new Chat({
+        message: `${name} joined the chat`,
+        name: users[socket.id],
+        classType: "center",
+      });
+      chatMessage.save();
+    }
     socket.broadcast.emit("user-joined", name);
   });
 
@@ -46,16 +48,16 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", (message) => {
-    if (users[socket.id]) {
+    if (users[socket.id] !== "Annonymous") {
       let chatMessage = new Chat({
         message: `${users[socket.id]} left the chat`,
         name: users[socket.id],
         classType: "center",
       });
       chatMessage.save();
-      socket.broadcast.emit("user-left", users[socket.id]);
-      delete users[socket.id];
     }
+    socket.broadcast.emit("user-left", users[socket.id]);
+    delete users[socket.id];
   });
 });
 

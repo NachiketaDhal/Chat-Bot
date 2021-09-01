@@ -45,6 +45,7 @@ const Chats = () => {
     socket.emit("new-user-joined", name);
 
     socket.on("user-joined", (name) => {
+      if (!name || name === "Annonymous") return;
       appendMessage(`${name} joined the chat`, "center");
     });
   }, []);
@@ -84,6 +85,7 @@ const Chats = () => {
   useEffect(() => {
     if (userName === "Annonymous") return;
     socket.on("user-left", (name: string) => {
+      if (!name || name === "Annonymous") return;
       appendMessage(`${name} left the chat`, "center");
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
